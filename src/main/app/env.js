@@ -5,7 +5,7 @@ let envId = 0
 
 const patchEnvPath = () => {
   if (process.platform === 'darwin') {
-    process.env.PATH += (process.env.PATH.endsWith(path.delimiter) ? '' : path.delimiter) + '/Library/TeX/texbin'
+    process.env.PATH += (process.env.PATH.endsWith(path.delimiter) ? '' : path.delimiter) + '/Library/TeX/texbin:/opt/homebrew/bin:/usr/local/bin'
   }
 }
 

@@ -144,8 +144,8 @@ export const uploadImage = async (pathname, image, preferences) => {
       .then(result => {
         re(result.data.content.download_url)
       })
-      .catch(_ => {
-        rj('Upload failed, the image will be copied to the image folder')
+      .catch(err => {
+        rj(err)
       })
   }
 
@@ -154,7 +154,7 @@ export const uploadImage = async (pathname, image, preferences) => {
     if (typeof filepath !== 'string') {
       isPath = false
       const data = new Uint8Array(filepath)
-      filepath = path.join(tmpdir(), +new Date())
+      filepath = path.join(tmpdir(), new Date().getTime() + '.jpg')
       await fs.writeFile(filepath, data)
     }
     if (uploader === 'picgo') {
@@ -227,12 +227,14 @@ export const uploadImage = async (pathname, image, preferences) => {
             uploadByCommand(currentUploader, reader.result)
             break
           default:
-            uploadByGithub(reader.result, image.name)
+            console.log(reader.result)
+            uploadByGithub(Buffer.from(reader.result).toString('base64'), image.name)
         }
       }
 
-      const readerFunction = currentUploader !== 'github' ? 'readAsArrayBuffer' : 'readAsDataURL'
-      reader[readerFunction](image)
+      // const readerFunction = currentUploader !== 'github' ? 'readAsArrayBuffer' : 'readAsDataURL'
+      // reader[readerFunction](image)
+      reader.readAsArrayBuffer(image)
     }
   }
   return promise
